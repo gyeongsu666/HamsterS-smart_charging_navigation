@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>햄스터 로봇 스마트 충전 내비게이션</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>🐹 햄스터 로봇 스마트 충전 내비게이션</h1>
+            <p>격자 지도를 그리고 배터리 잔량을 입력하면, 다익스트라로 <b>도달 가능한 최단 충전소</b>를 찾아 로봇이 주행합니다.</p>
+        </header>
+
+        <main class="layout">
+            <!-- 왼쪽: 컨트롤 패널 -->
+            <section class="panel controls">
+                <h2>① 지도 설정</h2>
+
+                <div class="field-row">
+                    <label>행
+                        <input type="number" id="rowsInput" value="5" min="2" max="15">
+                    </label>
+                    <label>열
+                        <input type="number" id="colsInput" value="5" min="2" max="15">
+                    </label>
+                    <button id="resizeBtn" class="btn btn-sub">크기 적용</button>
+                </div>
+
+                <h2>② 도구 선택 <span class="hint">(클릭/드래그로 칠하기)</span></h2>
+                <div class="palette">
+                    <button class="tool" data-type="1">길</button>
+                    <button class="tool" data-type="0">벽</button>
+                    <button class="tool active" data-type="2">출발지</button>
+                    <button class="tool" data-type="3">충전소</button>
+                    <button class="tool" data-type="4">목적지</button>
+                </div>
+
+                <h2>③ 배터리 잔량</h2>
+                <div class="field-row">
+                    <label class="radio"><input type="radio" name="batteryMode" value="manual" checked> 직접 입력</label>
+                    <label class="radio"><input type="radio" name="batteryMode" value="auto"> 로봇에서 불러오기</label>
+                </div>
+                <div class="field-row">
+                    <input type="number" id="batteryInput" value="100" min="0" max="100">
+                    <span class="unit">%</span>
+                </div>
+
+                <h2>④ 로봇 시작 방향 <span class="hint">(A3에 올려놓을 때 보는 쪽)</span></h2>
+                <div class="field-row">
+                    <select id="startDirInput">
+                        <option value="UP" selected>⬆ 위쪽 (지도 위 = A3 위)</option>
+                        <option value="RIGHT">➡ 오른쪽</option>
+                        <option value="DOWN">⬇ 아래쪽</option>
+                        <option value="LEFT">⬅ 왼쪽</option>
+                    </select>
+                </div>
+
+                <h2>⑤ 충전소 선택 우선순위</h2>
+                <div class="field-row">
+                    <select id="priorityInput">
+                        <option value="distance" selected>거리 우선 (가장 가까운 충전소)</option>
+                        <option value="voltage">전압 우선 (태양광 전압이 가장 높은 충전소)</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button id="startBtn" class="btn btn-primary">🚗 주행 시작</button>
+                    <button id="clearBtn" class="btn btn-sub">초기화</button>
+                </div>
+
+                <div class="legend">
+                    <span><i class="c-start"></i> 출발지</span>
+                    <span><i class="c-dest"></i> 목적지</span>
+                    <span><i class="c-station"></i> 충전소</span>
+                    <span><i class="c-road"></i> 길</span>
+                    <span><i class="c-wall"></i> 벽</span>
+                    <span><i class="c-path"></i> 계산 경로</span>
+                </div>
+            </section>
+
+            <!-- 오른쪽: 지도 + 결과 -->
+            <section class="panel map-area">
+                <h2>지도</h2>
+                <div id="grid" class="grid"></div>
+
+                <div id="result" class="result hidden"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-box">
+            <div id="modalIcon" class="modal-icon">✅</div>
+            <h3 id="modalTitle">결과</h3>
+            <p id="modalMsg"></p>
+            <button id="modalClose" class="btn btn-primary">확인</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

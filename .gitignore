@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+
+# 임시/테스트 파일
+a.py
+
+# 에디터
+.vscode/
+.idea/
+
+# 압축 파일
+*.zip
